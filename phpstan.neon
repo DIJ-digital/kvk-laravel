@@ -1,0 +1,16 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+
+    strictRules:
+        dynamicCallOnStaticMethod: false
+
+    paths:
+        - config
+        - src
+
+    level: 10
+
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+

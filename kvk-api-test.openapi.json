@@ -1,0 +1,996 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KVK Handelsregister API — Test Environment",
+    "description": "KVK (Kamer van Koophandel) Handelsregister API test environment. All endpoints use fictitious test data and require no registration.\n\nTest API Key: `l7xx1f2691f2520d487b902f4e0b57a0b197`\n\nSee https://developers.kvk.nl/nl/documentation/testing for full documentation.",
+    "version": "2.0.0",
+    "contact": {
+      "name": "KVK Developer Portal",
+      "url": "https://developers.kvk.nl"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.kvk.nl/test",
+      "description": "KVK Test Environment"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyHeader": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Zoeken",
+      "description": "Search the KVK registry by name, KVK number, address, etc."
+    },
+    {
+      "name": "Basisprofiel",
+      "description": "Company base profile — owner, main branch, branches listing"
+    },
+    {
+      "name": "Vestigingsprofiel",
+      "description": "Branch (vestiging) profile details"
+    },
+    {
+      "name": "Naamgeving",
+      "description": "Trade names (handelsnamen) for a KVK number"
+    }
+  ],
+  "paths": {
+    "/api/v2/zoeken": {
+      "get": {
+        "tags": ["Zoeken"],
+        "operationId": "zoeken",
+        "summary": "Search the KVK registry",
+        "description": "Search for companies and branches by name, KVK number, RSIN, branch number, address, or type.\n\nTest KVK numbers:\n- 69599084 (Eenmanszaak)\n- 68727720 (NV)\n- 90004760 (NV)\n- 68750110 (BV)\n- 90001354 (BV)\n- 69599068 (Stichting)\n- 90000102 (Stichting)\n- 90006623 (Stichting)\n- 69599076 (VoF)\n- 90005414 (VoF)\n- 55344526 (Coöperatie)\n- 90002520 (Kerkgenootschap)\n- 90002490 (Onderlinge Waarborg Maatschappij)\n- 90001745 (Maatschap)\n- 90003942 (Commanditaire Vennootschap)\n- 55505201 (Overige Privaatrechtelijke Rechtspersoon)\n- 90000749 (Vereniging van Eigenaars)\n- 90004973 (Error response test case)\n- 90002903 (Error message test case)",
+        "parameters": [
+          {
+            "name": "kvkNummer",
+            "in": "query",
+            "description": "KVK number (8 digits)",
+            "schema": { "type": "string", "example": "69599084" }
+          },
+          {
+            "name": "rsin",
+            "in": "query",
+            "description": "RSIN number (9 digits)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "vestigingsnummer",
+            "in": "query",
+            "description": "Branch number (12 digits)",
+            "schema": { "type": "string", "example": "000037178598" }
+          },
+          {
+            "name": "naam",
+            "in": "query",
+            "description": "Trade name or statutory name (exact word matching, not prefix)",
+            "schema": { "type": "string", "example": "test" }
+          },
+          {
+            "name": "straatnaam",
+            "in": "query",
+            "description": "Street name",
+            "schema": { "type": "string", "example": "Rietdekkershof" }
+          },
+          {
+            "name": "huisnummer",
+            "in": "query",
+            "description": "House number (only with postcode)",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "huisletter",
+            "in": "query",
+            "description": "House letter (only with huisnummer, single letter)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "postcode",
+            "in": "query",
+            "description": "Postal code (only with huisnummer or postbusnummer)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "postbusnummer",
+            "in": "query",
+            "description": "PO Box number (only with postcode)",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "plaats",
+            "in": "query",
+            "description": "City name",
+            "schema": { "type": "string", "example": "Veendam" }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter by type. Combine with multiple &type= params.",
+            "schema": {
+              "type": "string",
+              "enum": ["hoofdvestiging", "nevenvestiging", "rechtspersoon"]
+            },
+            "example": "hoofdvestiging"
+          },
+          {
+            "name": "inclusiefInactieveRegistraties",
+            "in": "query",
+            "description": "Include inactive registrations (default: false)",
+            "schema": { "type": "boolean", "default": false }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Page number (1–1000)",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 1000, "default": 1 }
+          },
+          {
+            "name": "resultatenPerPagina",
+            "in": "query",
+            "description": "Results per page (default: 10, max: 100)",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 10 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ZoekenResponse" },
+                "example": {
+                  "pagina": 1,
+                  "resultatenPerPagina": 10,
+                  "totaal": 1,
+                  "resultaten": [
+                    {
+                      "kvkNummer": "69599068",
+                      "vestigingsnummer": "000037178598",
+                      "naam": "Test Stichting Bolderbast",
+                      "adres": {
+                        "binnenlandsAdres": {
+                          "type": "bezoekadres",
+                          "straatnaam": "Hizzaarderlaan",
+                          "huisnummer": 1,
+                          "postcode": "1234AB",
+                          "plaats": "Lollum"
+                        }
+                      },
+                      "type": "hoofdvestiging",
+                      "actief": "Ja",
+                      "links": [
+                        {
+                          "rel": "basisprofiel",
+                          "href": "https://api.kvk.nl/api/v1/basisprofielen/69599068"
+                        },
+                        {
+                          "rel": "vestigingsprofiel",
+                          "href": "https://api.kvk.nl/api/v1/vestigingsprofielen/000037178598"
+                        }
+                      ]
+                    }
+                  ],
+                  "links": [
+                    {
+                      "rel": "self",
+                      "href": "https://api.kvk.nl/test/api/v2/zoeken?naam=test&pagina=1&resultatenperpagina=10"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/v1/basisprofielen/{kvkNummer}": {
+      "get": {
+        "tags": ["Basisprofiel"],
+        "operationId": "getBasisProfiel",
+        "summary": "Get company base profile",
+        "description": "Retrieve the base profile for a company by KVK number. Includes embedded owner and main branch data.",
+        "parameters": [
+          {
+            "name": "kvkNummer",
+            "in": "path",
+            "required": true,
+            "description": "8-digit KVK number",
+            "schema": { "type": "string" },
+            "examples": {
+              "eenmanszaak": { "value": "69599084", "summary": "Eenmanszaak" },
+              "bv": { "value": "68750110", "summary": "BV" },
+              "bv2": { "value": "90001354", "summary": "BV (2)" },
+              "nv": { "value": "68727720", "summary": "NV" },
+              "nv2": { "value": "90004760", "summary": "NV (2)" },
+              "stichting": { "value": "69599068", "summary": "Stichting" },
+              "stichting2": { "value": "90000102", "summary": "Stichting (2)" },
+              "stichting3": { "value": "90006623", "summary": "Stichting (3)" },
+              "vof": { "value": "69599076", "summary": "VoF" },
+              "vof2": { "value": "90005414", "summary": "VoF (2)" },
+              "cooperatie": { "value": "55344526", "summary": "Coöperatie" },
+              "kerkgenootschap": { "value": "90002520", "summary": "Kerkgenootschap" },
+              "onderlinge": { "value": "90002490", "summary": "Onderlinge Waarborg Maatschappij" },
+              "maatschap": { "value": "90001745", "summary": "Maatschap" },
+              "cv": { "value": "90003942", "summary": "Commanditaire Vennootschap" },
+              "overige": { "value": "55505201", "summary": "Overige Privaatrechtelijke Rechtspersoon" },
+              "vve": { "value": "90000749", "summary": "Vereniging van Eigenaars" },
+              "error": { "value": "90004973", "summary": "Error response test case" },
+              "error2": { "value": "90002903", "summary": "Error message test case" }
+            }
+          },
+          {
+            "name": "geoData",
+            "in": "query",
+            "description": "Include geo coordinates (default: false)",
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company base profile",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BasisProfielResponse" },
+                "example": {
+                  "kvkNummer": "69599068",
+                  "indNonMailing": "Ja",
+                  "naam": "Test Stichting Bolderbast",
+                  "formeleRegistratiedatum": "20150622",
+                  "materieleRegistratie": {
+                    "datumAanvang": "20150101",
+                    "datumEinde": null
+                  },
+                  "statutaireNaam": "Stichting Bolderbast",
+                  "handelsnamen": [
+                    { "naam": "Test Stichting Bolderbast", "volgorde": 1 }
+                  ],
+                  "sbiActiviteiten": [
+                    {
+                      "sbiCode": "86101",
+                      "sbiOmschrijving": "Universitair medisch centra",
+                      "indHoofdactiviteit": "Ja"
+                    }
+                  ],
+                  "links": []
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/v1/basisprofielen/{kvkNummer}/eigenaar": {
+      "get": {
+        "tags": ["Basisprofiel"],
+        "operationId": "getBasisProfielEigenaar",
+        "summary": "Get company owner",
+        "description": "Retrieve owner information for a company. The owner can be a natural person (natuurlijk persoon) or a legal entity (niet-natuurlijk persoon).",
+        "parameters": [
+          {
+            "name": "kvkNummer",
+            "in": "path",
+            "required": true,
+            "description": "8-digit KVK number",
+            "schema": { "type": "string" },
+            "examples": {
+              "stichting": { "value": "69599068", "summary": "Stichting" },
+              "bv": { "value": "68750110", "summary": "BV" },
+              "cv": { "value": "90003942", "summary": "Commanditaire Vennootschap" }
+            }
+          },
+          {
+            "name": "geoData",
+            "in": "query",
+            "description": "Include geo coordinates (default: false)",
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner information",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EigenaarResponse" },
+                "example": {
+                  "rsin": "123456789",
+                  "rechtsvorm": "BesloteVennootschap",
+                  "uitgebreideRechtsvorm": "Besloten Vennootschap met gewone structuur",
+                  "adressen": [],
+                  "websites": ["https://example.com"],
+                  "links": []
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/v1/basisprofielen/{kvkNummer}/hoofdvestiging": {
+      "get": {
+        "tags": ["Basisprofiel"],
+        "operationId": "getBasisProfielHoofdvestiging",
+        "summary": "Get main branch (hoofdvestiging)",
+        "description": "Retrieve abbreviated main branch information for a company.",
+        "parameters": [
+          {
+            "name": "kvkNummer",
+            "in": "path",
+            "required": true,
+            "description": "8-digit KVK number",
+            "schema": { "type": "string" },
+            "examples": {
+              "stichting": { "value": "69599068", "summary": "Stichting" },
+              "bv": { "value": "68750110", "summary": "BV" },
+              "cv": { "value": "90003942", "summary": "Commanditaire Vennootschap" }
+            }
+          },
+          {
+            "name": "geoData",
+            "in": "query",
+            "description": "Include geo coordinates (default: false)",
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Main branch information",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HoofdvestigingResponse" },
+                "example": {
+                  "vestigingsnummer": "000037178598",
+                  "kvkNummer": "69599068",
+                  "rsin": "123456789",
+                  "indNonMailing": "Nee",
+                  "formeleRegistratiedatum": "20150622",
+                  "materieleRegistratie": {
+                    "datumAanvang": "20150101",
+                    "datumEinde": null
+                  },
+                  "eersteHandelsnaam": "Test BV Donald",
+                  "indHoofdvestiging": "Ja",
+                  "indCommercieleVestiging": "Ja",
+                  "voltijdWerkzamePersonen": 10,
+                  "totaalWerkzamePersonen": 15,
+                  "deeltijdWerkzamePersonen": 5,
+                  "handelsnamen": [],
+                  "adressen": [],
+                  "websites": [],
+                  "sbiActiviteiten": [],
+                  "links": []
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/v1/basisprofielen/{kvkNummer}/vestigingen": {
+      "get": {
+        "tags": ["Basisprofiel"],
+        "operationId": "getBasisProfielVestigingen",
+        "summary": "Get branches listing",
+        "description": "Retrieve a list of all branches (vestigingen) under a company.",
+        "parameters": [
+          {
+            "name": "kvkNummer",
+            "in": "path",
+            "required": true,
+            "description": "8-digit KVK number",
+            "schema": { "type": "string" },
+            "examples": {
+              "stichting": { "value": "69599068", "summary": "Stichting" },
+              "bv": { "value": "68750110", "summary": "BV" },
+              "cv": { "value": "90003942", "summary": "Commanditaire Vennootschap" }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Branches listing",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VestigingenResponse" },
+                "example": {
+                  "kvkNummer": "69599068",
+                  "aantalCommercieleVestigingen": 3,
+                  "aantalNietCommercieleVestigingen": 1,
+                  "totaalAantalVestigingen": 4,
+                  "vestigingen": [
+                    {
+                      "vestigingsnummer": "000037178598",
+                      "eersteHandelsnaam": "Test BV Donald",
+                      "indHoofdvestiging": "Ja",
+                      "indCommercieleVestiging": "Ja",
+                      "volledigAdres": "Hizzaarderlaan 1 1234AB Lollum",
+                      "links": []
+                    }
+                  ],
+                  "links": []
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/v1/vestigingsprofielen/{vestigingsnummer}": {
+      "get": {
+        "tags": ["Vestigingsprofiel"],
+        "operationId": "getVestigingsProfiel",
+        "summary": "Get branch profile",
+        "description": "Retrieve the full profile for a specific branch (vestiging) by branch number.",
+        "parameters": [
+          {
+            "name": "vestigingsnummer",
+            "in": "path",
+            "required": true,
+            "description": "12-digit branch number",
+            "schema": { "type": "string" },
+            "examples": {
+              "eenmanszaak1": { "value": "38509504", "summary": "Eenmanszaak" },
+              "eenmanszaak2": { "value": "38509520", "summary": "Eenmanszaak (2)" },
+              "bv1": { "value": "37178598", "summary": "BV" },
+              "bv2": { "value": "37178601", "summary": "BV (2)" },
+              "bv3": { "value": "990000541921", "summary": "BV (3)" },
+              "nv": { "value": "37143557", "summary": "NV" },
+              "stichtingGeo1": { "value": "990064773193", "summary": "Stichting (geoData)" },
+              "stichtingGeo2": { "value": "990064773207", "summary": "Stichting (geoData) (2)" },
+              "vof1": { "value": "38509474", "summary": "VoF" },
+              "vof2": { "value": "38509490", "summary": "VoF (2)" },
+              "vof3": { "value": "990000216645", "summary": "VoF (3)" },
+              "vof4": { "value": "990000821206", "summary": "VoF (4)" },
+              "cooperatie": { "value": "37178605", "summary": "Coöperatie" },
+              "onderlinge": { "value": "990000246858", "summary": "Onderlinge Waarborg Maatschappij" },
+              "maatschap": { "value": "990000637800", "summary": "Maatschap" },
+              "cv1": { "value": "990000008288", "summary": "Commanditaire Vennootschap" },
+              "cv2": { "value": "990000246530", "summary": "Commanditaire Vennootschap (2)" },
+              "cv3": { "value": "990000768218", "summary": "Commanditaire Vennootschap (3)" },
+              "cv4": { "value": "990000852070", "summary": "Commanditaire Vennootschap (4)" }
+            }
+          },
+          {
+            "name": "geoData",
+            "in": "query",
+            "description": "Include geo coordinates (default: false)",
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Branch profile",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VestigingsProfielResponse" },
+                "example": {
+                  "vestigingsnummer": "000037178598",
+                  "kvkNummer": "68750110",
+                  "rsin": "123456789",
+                  "indNonMailing": "Nee",
+                  "formeleRegistratiedatum": "20150622",
+                  "materieleRegistratie": {
+                    "datumAanvang": "20150101",
+                    "datumEinde": null
+                  },
+                  "statutaireNaam": "Test BV Donald",
+                  "eersteHandelsnaam": "Test BV Donald",
+                  "indHoofdvestiging": "Ja",
+                  "indCommercieleVestiging": "Ja",
+                  "voltijdWerkzamePersonen": 10,
+                  "totaalWerkzamePersonen": 15,
+                  "deeltijdWerkzamePersonen": 5,
+                  "handelsnamen": [
+                    { "naam": "Test BV Donald", "volgorde": 1 }
+                  ],
+                  "adressen": [],
+                  "websites": ["https://example.com"],
+                  "sbiActiviteiten": [
+                    {
+                      "sbiCode": "86101",
+                      "sbiOmschrijving": "Universitair medisch centra",
+                      "indHoofdactiviteit": "Ja"
+                    }
+                  ],
+                  "links": []
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/v1/naamgevingen/kvknummer/{kvkNummer}": {
+      "get": {
+        "tags": ["Naamgeving"],
+        "operationId": "getNaamgeving",
+        "summary": "Get trade names",
+        "description": "Retrieve trade name information for a company by KVK number. Returns statutory name, trade names, and per-branch naming details.",
+        "parameters": [
+          {
+            "name": "kvkNummer",
+            "in": "path",
+            "required": true,
+            "description": "8-digit KVK number",
+            "schema": { "type": "string" },
+            "examples": {
+              "eenmanszaak": { "value": "69599084", "summary": "Eenmanszaak" },
+              "bv": { "value": "68750110", "summary": "BV" },
+              "bv2": { "value": "90001354", "summary": "BV (2)" },
+              "nv": { "value": "68727720", "summary": "NV" },
+              "nv2": { "value": "90004760", "summary": "NV (2)" },
+              "stichting": { "value": "69599068", "summary": "Stichting" },
+              "stichting2": { "value": "90000102", "summary": "Stichting (2)" },
+              "stichting3": { "value": "90006623", "summary": "Stichting (3)" },
+              "vof": { "value": "69599076", "summary": "VoF" },
+              "vof2": { "value": "90005414", "summary": "VoF (2)" },
+              "cooperatie": { "value": "55344526", "summary": "Coöperatie" },
+              "kerkgenootschap": { "value": "90002520", "summary": "Kerkgenootschap" },
+              "onderlinge": { "value": "90002490", "summary": "Onderlinge Waarborg Maatschappij" },
+              "maatschap": { "value": "90001745", "summary": "Maatschap" },
+              "cv": { "value": "90003942", "summary": "Commanditaire Vennootschap" },
+              "overige": { "value": "55505201", "summary": "Overige Privaatrechtelijke Rechtspersoon" },
+              "vve": { "value": "90000749", "summary": "Vereniging van Eigenaars" }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trade name information",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NaamgevingResponse" },
+                "example": {
+                  "kvkNummer": "69599068",
+                  "rsin": "123456789",
+                  "statutaireNaam": "Stichting Bolderbast",
+                  "naam": "Test Stichting Bolderbast",
+                  "ookGenoemd": "Bolderbast",
+                  "startdatum": "20150101",
+                  "einddatum": null,
+                  "vestigingen": [
+                    {
+                      "vestigingsnummer": "000037178598",
+                      "eersteHandelsnaam": "Test Stichting Bolderbast",
+                      "handelsnamen": [
+                        { "naam": "Test Stichting Bolderbast", "volgorde": 1 }
+                      ],
+                      "links": []
+                    }
+                  ],
+                  "links": []
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "apikey",
+        "description": "Test API key: l7xx1f2691f2520d487b902f4e0b57a0b197"
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request — invalid parameters (400)",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": {
+              "fout": {
+                "code": "IPD1999",
+                "omschrijving": "Opgegeven parameter(s) ongeldig"
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Not authenticated — missing or invalid API key (401)",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": {
+              "fout": {
+                "code": "401",
+                "omschrijving": "Not authenticated"
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not found — no results or invalid resource (404)",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": {
+              "fout": {
+                "code": "IPD5200",
+                "omschrijving": "Geen resultaten gevonden voor de opgegeven zoekparameters"
+              }
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Internal server error (500)",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": {
+              "fout": {
+                "code": "IPD9999",
+                "omschrijving": "Algemene technische fout"
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "fout": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string", "description": "IPD error code" },
+              "omschrijving": { "type": "string", "description": "Error description (Dutch)" }
+            }
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "rel": { "type": "string", "description": "Relation type (e.g. basisprofiel, vestigingsprofiel, self)" },
+          "href": { "type": "string", "format": "uri", "description": "URL to the related resource" }
+        }
+      },
+      "MaterieleRegistratie": {
+        "type": "object",
+        "properties": {
+          "datumAanvang": { "type": "string", "description": "Start date (YYYYMMDD format, may contain zeros for unknown parts)" },
+          "datumEinde": { "type": "string", "nullable": true, "description": "End date (YYYYMMDD format, null if still active)" }
+        }
+      },
+      "Handelsnaam": {
+        "type": "object",
+        "properties": {
+          "naam": { "type": "string", "description": "Trade name" },
+          "volgorde": { "type": "integer", "description": "Registration order" }
+        }
+      },
+      "SbiActiviteit": {
+        "type": "object",
+        "properties": {
+          "sbiCode": { "type": "string", "description": "SBI classification code" },
+          "sbiOmschrijving": { "type": "string", "description": "SBI activity description" },
+          "indHoofdactiviteit": { "type": "string", "enum": ["Ja", "Nee"], "description": "Main activity indicator" }
+        }
+      },
+      "Adres": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["bezoekadres", "correspondentieadres"], "description": "Address type: visiting or postal" },
+          "indicatieAfgeschermd": { "type": "string", "enum": ["Ja", "Nee"], "description": "Shielded indicator" },
+          "volledigAdres": { "type": "string", "description": "Full formatted address" },
+          "straatnaam": { "type": "string" },
+          "huisnummer": { "type": "integer" },
+          "huisnummerToevoeging": { "type": "string" },
+          "huisletter": { "type": "string" },
+          "toevoegingAdres": { "type": "string", "description": "Address addition (e.g. '3e etage')" },
+          "postcode": { "type": "string" },
+          "postbusnummer": { "type": "integer" },
+          "plaats": { "type": "string" },
+          "straatHuisnummer": { "type": "string" },
+          "postcodeWoonplaats": { "type": "string" },
+          "regio": { "type": "string" },
+          "land": { "type": "string" },
+          "geoData": { "$ref": "#/components/schemas/GeoData" }
+        }
+      },
+      "GeoData": {
+        "type": "object",
+        "description": "Geo coordinates — only present when ?geoData=true",
+        "properties": {
+          "addresseerbaarObjectId": { "type": "string" },
+          "nummerAanduidingId": { "type": "string" },
+          "gpsLatitude": { "type": "number", "format": "double" },
+          "gpsLongitude": { "type": "number", "format": "double" },
+          "rijksdriehoekX": { "type": "number", "format": "double" },
+          "rijksdriehoekY": { "type": "number", "format": "double" },
+          "rijksdriehoekZ": { "type": "number", "format": "double" }
+        }
+      },
+      "BinnenlandsAdres": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["bezoekadres", "correspondentieadres"] },
+          "straatnaam": { "type": "string" },
+          "huisnummer": { "type": "integer" },
+          "huisletter": { "type": "string" },
+          "huisnummerToevoeging": { "type": "string" },
+          "postbusnummer": { "type": "integer" },
+          "postcode": { "type": "string" },
+          "plaats": { "type": "string" }
+        }
+      },
+      "BuitenlandsAdres": {
+        "type": "object",
+        "properties": {
+          "straatHuisnummer": { "type": "string" },
+          "postcodeWoonplaats": { "type": "string" },
+          "land": { "type": "string" }
+        }
+      },
+      "ZoekenAdres": {
+        "type": "object",
+        "properties": {
+          "binnenlandsAdres": { "$ref": "#/components/schemas/BinnenlandsAdres" },
+          "buitenlandsAdres": { "$ref": "#/components/schemas/BuitenlandsAdres" }
+        }
+      },
+      "ZoekenResultaat": {
+        "type": "object",
+        "properties": {
+          "kvkNummer": { "type": "string", "description": "8-digit KVK number" },
+          "rsin": { "type": "string", "description": "RSIN (only when rsin was input parameter)" },
+          "vestigingsnummer": { "type": "string", "description": "12-digit branch number" },
+          "naam": { "type": "string", "description": "Trade or statutory name" },
+          "adres": { "$ref": "#/components/schemas/ZoekenAdres" },
+          "type": { "type": "string", "enum": ["hoofdvestiging", "nevenvestiging", "rechtspersoon"] },
+          "actief": { "type": "string", "enum": ["Ja", "Nee"] },
+          "vervallenNaam": { "type": "string", "description": "Expired trade name that matched search" },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "ZoekenResponse": {
+        "type": "object",
+        "properties": {
+          "pagina": { "type": "integer", "description": "Current page number" },
+          "resultatenPerPagina": { "type": "integer", "description": "Results per page" },
+          "totaal": { "type": "integer", "description": "Total number of results" },
+          "vorige": { "type": "string", "description": "Link to previous page" },
+          "volgende": { "type": "string", "description": "Link to next page" },
+          "resultaten": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ZoekenResultaat" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "BasisProfielResponse": {
+        "type": "object",
+        "properties": {
+          "kvkNummer": { "type": "string" },
+          "indNonMailing": { "type": "string", "enum": ["Ja", "Nee"] },
+          "naam": { "type": "string" },
+          "formeleRegistratiedatum": { "type": "string", "description": "YYYYMMDD" },
+          "materieleRegistratie": { "$ref": "#/components/schemas/MaterieleRegistratie" },
+          "statutaireNaam": { "type": "string" },
+          "handelsnamen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Handelsnaam" }
+          },
+          "sbiActiviteiten": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SbiActiviteit" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "EigenaarResponse": {
+        "type": "object",
+        "properties": {
+          "rsin": { "type": "string" },
+          "rechtsvorm": { "type": "string", "description": "Legal form code" },
+          "uitgebreideRechtsvorm": { "type": "string", "description": "Full legal form description" },
+          "adressen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Adres" }
+          },
+          "websites": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "HoofdvestigingResponse": {
+        "type": "object",
+        "properties": {
+          "vestigingsnummer": { "type": "string" },
+          "kvkNummer": { "type": "string" },
+          "rsin": { "type": "string" },
+          "indNonMailing": { "type": "string", "enum": ["Ja", "Nee"] },
+          "formeleRegistratiedatum": { "type": "string", "description": "YYYYMMDD" },
+          "materieleRegistratie": { "$ref": "#/components/schemas/MaterieleRegistratie" },
+          "eersteHandelsnaam": { "type": "string" },
+          "indHoofdvestiging": { "type": "string", "enum": ["Ja", "Nee"] },
+          "indCommercieleVestiging": { "type": "string", "enum": ["Ja", "Nee"] },
+          "voltijdWerkzamePersonen": { "type": "integer" },
+          "totaalWerkzamePersonen": { "type": "integer" },
+          "deeltijdWerkzamePersonen": { "type": "integer" },
+          "handelsnamen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Handelsnaam" }
+          },
+          "adressen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Adres" }
+          },
+          "websites": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "sbiActiviteiten": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SbiActiviteit" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "VestigingListItem": {
+        "type": "object",
+        "properties": {
+          "vestigingsnummer": { "type": "string" },
+          "eersteHandelsnaam": { "type": "string" },
+          "indHoofdvestiging": { "type": "string", "enum": ["Ja", "Nee"] },
+          "indCommercieleVestiging": { "type": "string", "enum": ["Ja", "Nee"] },
+          "volledigAdres": { "type": "string" },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "VestigingenResponse": {
+        "type": "object",
+        "properties": {
+          "kvkNummer": { "type": "string" },
+          "aantalCommercieleVestigingen": { "type": "integer" },
+          "aantalNietCommercieleVestigingen": { "type": "integer" },
+          "totaalAantalVestigingen": { "type": "integer" },
+          "vestigingen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VestigingListItem" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "VestigingsProfielResponse": {
+        "type": "object",
+        "properties": {
+          "vestigingsnummer": { "type": "string" },
+          "kvkNummer": { "type": "string" },
+          "rsin": { "type": "string" },
+          "indNonMailing": { "type": "string", "enum": ["Ja", "Nee"] },
+          "formeleRegistratiedatum": { "type": "string", "description": "YYYYMMDD" },
+          "materieleRegistratie": { "$ref": "#/components/schemas/MaterieleRegistratie" },
+          "statutaireNaam": { "type": "string" },
+          "eersteHandelsnaam": { "type": "string" },
+          "indHoofdvestiging": { "type": "string", "enum": ["Ja", "Nee"] },
+          "indCommercieleVestiging": { "type": "string", "enum": ["Ja", "Nee"] },
+          "voltijdWerkzamePersonen": { "type": "integer" },
+          "totaalWerkzamePersonen": { "type": "integer" },
+          "deeltijdWerkzamePersonen": { "type": "integer" },
+          "handelsnamen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Handelsnaam" }
+          },
+          "adressen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Adres" }
+          },
+          "websites": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "sbiActiviteiten": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SbiActiviteit" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "NaamgevingVestiging": {
+        "type": "object",
+        "description": "Branch naming details. Commercial branches use eersteHandelsnaam + handelsnamen; non-commercial branches use naam + ookGenoemd.",
+        "properties": {
+          "vestigingsnummer": { "type": "string" },
+          "eersteHandelsnaam": { "type": "string", "description": "First trade name (commercial branches)" },
+          "handelsnamen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Handelsnaam" },
+            "description": "Trade names (commercial branches)"
+          },
+          "naam": { "type": "string", "description": "Name (non-commercial branches)" },
+          "ookGenoemd": { "type": "string", "description": "Also known as (non-commercial branches)" },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      },
+      "NaamgevingResponse": {
+        "type": "object",
+        "properties": {
+          "kvkNummer": { "type": "string" },
+          "rsin": { "type": "string" },
+          "statutaireNaam": { "type": "string" },
+          "naam": { "type": "string" },
+          "ookGenoemd": { "type": "string" },
+          "startdatum": { "type": "string", "description": "YYYYMMDD" },
+          "einddatum": { "type": "string", "nullable": true, "description": "YYYYMMDD, null if active" },
+          "vestigingen": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/NaamgevingVestiging" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Link" }
+          }
+        }
+      }
+    }
+  }
+}

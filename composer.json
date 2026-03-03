@@ -1,0 +1,53 @@
+{
+    "name": "dij-digital/kvk-laravel",
+    "description": "KVK API package for Laravel",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Han Woolderink",
+            "email": "han.woolderink@dij.digital"
+        }
+    ],
+    "require": {
+        "php": "^8.4|^8.5",
+        "illuminate/http": "^12",
+        "illuminate/support": "^12"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "rector/rector": "^2.3",
+        "laravel/pint": "^1.27",
+        "phpunit/phpunit": "^13.0",
+        "phpstan/phpstan-strict-rules": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DIJ\\Kvk\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DIJ\\Kvk\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=2G",
+        "rector": "vendor/bin/rector",
+        "rector:dry-run": "vendor/bin/rector process --dry-run",
+        "pint": "@php vendor/bin/pint",
+        "test": "@php vendor/bin/phpunit",
+        "test:coverage": "php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-html=tests/coverage/html --coverage-clover=tests/coverage/clover.xml"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DIJ\\Kvk\\KVKServiceProvider"
+            ],
+            "aliases": {
+                "KVK": "DIJ\\Kvk\\Facades\\KVK"
+            }
+        }
+    }
+}
