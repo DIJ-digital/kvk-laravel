@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\ValueObjects;
 
-readonly class MaterialRegistration
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class MaterialRegistration implements Arrayable
 {
     public function __construct(
         public ?string $startDate = null,
@@ -30,5 +35,16 @@ readonly class MaterialRegistration
             startDate: $startDate,
             endDate: $endDate,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'datumAanvang' => $this->startDate,
+            'datumEinde' => $this->endDate,
+        ];
     }
 }

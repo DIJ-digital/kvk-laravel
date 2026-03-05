@@ -90,4 +90,21 @@ final class BaseProfileResponseTest extends TestCase
         self::assertCount(1, $result->tradeNames);
         self::assertCount(1, $result->sbiActivities);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $result = BaseProfileResponse::fake();
+
+        $array = $result->toArray();
+
+        self::assertSame('69599068', $array['kvkNummer']);
+        self::assertSame('Ja', $array['indNonMailing']);
+        self::assertSame('Test Stichting Bolderbast', $array['naam']);
+        self::assertSame('20150622', $array['formeleRegistratiedatum']);
+        self::assertIsArray($array['materieleRegistratie']);
+        self::assertSame('Stichting Bolderbast', $array['statutaireNaam']);
+        self::assertCount(1, $array['handelsnamen']);
+        self::assertCount(1, $array['sbiActiviteiten']);
+        self::assertSame([], $array['links']);
+    }
 }

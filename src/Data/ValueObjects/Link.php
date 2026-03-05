@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\ValueObjects;
 
-readonly class Link
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class Link implements Arrayable
 {
     public function __construct(
         public string $rel,
@@ -20,5 +25,16 @@ readonly class Link
             rel: $data['rel'],
             href: $data['href'],
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'rel' => $this->rel,
+            'href' => $this->href,
+        ];
     }
 }

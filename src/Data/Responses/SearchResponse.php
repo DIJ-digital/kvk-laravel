@@ -6,8 +6,12 @@ namespace DIJ\Kvk\Data\Responses;
 
 use DIJ\Kvk\Data\ValueObjects\Link;
 use DIJ\Kvk\Data\ValueObjects\SearchResultAddress;
+use Illuminate\Contracts\Support\Arrayable;
 
-readonly class SearchResponse
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SearchResponse implements Arrayable
 {
     /**
      * @param  list<Link>  $links
@@ -63,5 +67,23 @@ readonly class SearchResponse
             expiredName: $expiredName,
             links: $links,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'kvkNummer' => $this->kvkNumber,
+            'naam' => $this->name,
+            'type' => $this->type,
+            'actief' => $this->active,
+            'rsin' => $this->rsin,
+            'vestigingsnummer' => $this->branchNumber,
+            'adres' => $this->address?->toArray(),
+            'vervallenNaam' => $this->expiredName,
+            'links' => array_map(fn (Link $link): array => $link->toArray(), $this->links),
+        ];
     }
 }

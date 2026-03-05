@@ -54,4 +54,18 @@ final class NamingBranchResponseTest extends TestCase
         self::assertSame('Test Stichting Bolderbast', $response->firstTradeName);
         self::assertCount(1, $response->tradeNames);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $response = NamingBranchResponse::fake();
+
+        $array = $response->toArray();
+
+        self::assertSame('000037178598', $array['vestigingsnummer']);
+        self::assertSame('Test Stichting Bolderbast', $array['eersteHandelsnaam']);
+        self::assertNull($array['naam']);
+        self::assertNull($array['ookGenoemd']);
+        self::assertCount(1, $array['handelsnamen']);
+        self::assertSame([], $array['links']);
+    }
 }

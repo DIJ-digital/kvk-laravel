@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\ValueObjects;
 
-readonly class TradeName
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class TradeName implements Arrayable
 {
     public function __construct(
         public string $name,
@@ -30,5 +35,16 @@ readonly class TradeName
             name: $name,
             order: $order,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'naam' => $this->name,
+            'volgorde' => $this->order,
+        ];
     }
 }

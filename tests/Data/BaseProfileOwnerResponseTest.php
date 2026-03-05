@@ -144,4 +144,19 @@ final class BaseProfileOwnerResponseTest extends TestCase
         self::assertCount(1, $owner->websites);
         self::assertSame('https://example.com', $owner->websites[0]);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $owner = BaseProfileOwnerResponse::fake();
+
+        $array = $owner->toArray();
+
+        self::assertSame('123456789', $array['rsin']);
+        self::assertSame('BesloteVennootschap', $array['rechtsvorm']);
+        self::assertSame('Besloten Vennootschap met gewone structuur', $array['uitgebreideRechtsvorm']);
+        self::assertCount(1, $array['adressen']);
+        self::assertIsArray($array['adressen'][0]);
+        self::assertSame(['https://example.com'], $array['websites']);
+        self::assertSame([], $array['links']);
+    }
 }

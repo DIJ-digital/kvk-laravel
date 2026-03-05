@@ -146,4 +146,21 @@ final class SearchResponseTest extends TestCase
 
         self::assertNotSame($a, $b);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $response = SearchResponse::fake();
+
+        $array = $response->toArray();
+
+        self::assertSame('69599068', $array['kvkNummer']);
+        self::assertSame('Test BV Donald', $array['naam']);
+        self::assertSame('hoofdvestiging', $array['type']);
+        self::assertSame('Ja', $array['actief']);
+        self::assertNull($array['rsin']);
+        self::assertSame('000037178598', $array['vestigingsnummer']);
+        self::assertNull($array['adres']);
+        self::assertNull($array['vervallenNaam']);
+        self::assertSame([], $array['links']);
+    }
 }

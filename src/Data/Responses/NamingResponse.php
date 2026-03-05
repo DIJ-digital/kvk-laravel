@@ -7,9 +7,13 @@ namespace DIJ\Kvk\Data\Responses;
 use DIJ\Kvk\Collections\NamingBranchCollection;
 use DIJ\Kvk\Data\ValueObjects\Link;
 use DIJ\Kvk\Exceptions\KvkException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\Response;
 
-readonly class NamingResponse
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class NamingResponse implements Arrayable
 {
     /**
      * @param  list<Link>  $links
@@ -95,5 +99,23 @@ readonly class NamingResponse
             endDate: $endDate,
             links: $links,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'kvkNummer' => $this->kvkNumber,
+            'statutaireNaam' => $this->statutoryName,
+            'naam' => $this->name,
+            'vestigingen' => $this->branches->toArray(),
+            'rsin' => $this->rsin,
+            'ookGenoemd' => $this->alsoKnownAs,
+            'startdatum' => $this->startDate,
+            'einddatum' => $this->endDate,
+            'links' => array_map(fn (Link $link): array => $link->toArray(), $this->links),
+        ];
     }
 }

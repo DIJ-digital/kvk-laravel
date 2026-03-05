@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data;
 
-readonly class Settings
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class Settings implements Arrayable
 {
     public function __construct(
         public string $base_url,
@@ -20,5 +25,16 @@ readonly class Settings
             base_url: $data['base_url'],
             api_key: $data['api_key'],
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'base_url' => $this->base_url,
+            'api_key' => $this->api_key,
+        ];
     }
 }

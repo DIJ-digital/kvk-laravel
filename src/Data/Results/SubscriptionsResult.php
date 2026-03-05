@@ -7,9 +7,13 @@ namespace DIJ\Kvk\Data\Results;
 use DIJ\Kvk\Collections\SubscriptionCollection;
 use DIJ\Kvk\Data\Responses\SubscriptionResponse;
 use DIJ\Kvk\Exceptions\KvkException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\Response;
 
-readonly class SubscriptionsResult
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SubscriptionsResult implements Arrayable
 {
     public function __construct(
         public string $customerId,
@@ -56,5 +60,16 @@ readonly class SubscriptionsResult
             customerId: $customerId,
             subscriptions: $subscriptions,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'klantId' => $this->customerId,
+            'abonnementen' => $this->subscriptions->toArray(),
+        ];
     }
 }

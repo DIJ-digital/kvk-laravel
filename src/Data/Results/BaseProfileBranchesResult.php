@@ -8,9 +8,13 @@ use DIJ\Kvk\Collections\BaseProfileBranchCollection;
 use DIJ\Kvk\Data\Responses\BaseProfileBranchResponse;
 use DIJ\Kvk\Data\ValueObjects\Link;
 use DIJ\Kvk\Exceptions\KvkException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\Response;
 
-readonly class BaseProfileBranchesResult
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class BaseProfileBranchesResult implements Arrayable
 {
     /**
      * @param  list<Link>  $links
@@ -78,5 +82,20 @@ readonly class BaseProfileBranchesResult
             branches: $branches,
             links: $links,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'kvkNummer' => $this->kvkNumber,
+            'aantalCommercieleVestigingen' => $this->commercialBranchCount,
+            'aantalNietCommercieleVestigingen' => $this->nonCommercialBranchCount,
+            'totaalAantalVestigingen' => $this->totalBranchCount,
+            'vestigingen' => $this->branches->toArray(),
+            'links' => array_map(fn (Link $link): array => $link->toArray(), $this->links),
+        ];
     }
 }

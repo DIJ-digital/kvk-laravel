@@ -96,4 +96,17 @@ final class SignalResponseTest extends TestCase
         self::assertSame('2024-05-14T15:25:13.773Z', $response->registrationTimestamp);
         self::assertSame('69792917', $response->relatesTo['kvkNummer']);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $response = SignalResponse::fake();
+
+        $array = $response->toArray();
+
+        self::assertSame('3e96fad5-606e-43be-9bd5-4718f8afd273', $array['berichtId']);
+        self::assertSame('SignaalGewijzigdeInschrijving', $array['signaalType']);
+        self::assertSame('-64945f8e:18f77b51fa3:-4654', $array['registratieId']);
+        self::assertSame('2024-05-14T15:25:13.773Z', $array['registratieTijdstip']);
+        self::assertSame('69792917', $array['heeftBetrekkingOp']['kvkNummer']);
+    }
 }

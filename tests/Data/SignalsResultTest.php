@@ -106,4 +106,20 @@ final class SignalsResultTest extends TestCase
         self::assertNull($result->previous);
         self::assertNull($result->next);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $result = SignalsResult::fake();
+
+        $array = $result->toArray();
+
+        self::assertIsArray($array['signalen']);
+        self::assertCount(1, $array['signalen']);
+        self::assertSame(1, $array['pagina']);
+        self::assertSame(100, $array['aantal']);
+        self::assertSame(1, $array['totaal']);
+        self::assertSame(1, $array['totaalPaginas']);
+        self::assertNull($array['vorige']);
+        self::assertNull($array['volgende']);
+    }
 }

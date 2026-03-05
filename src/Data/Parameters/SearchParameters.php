@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\Parameters;
 
-readonly class SearchParameters
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SearchParameters implements Arrayable
 {
     /**
      * @param  array<'hoofdvestiging'|'nevenvestiging'|'rechtspersoon'>|null  $type

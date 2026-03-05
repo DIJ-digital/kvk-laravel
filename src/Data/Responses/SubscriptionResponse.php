@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\Responses;
 
-readonly class SubscriptionResponse
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SubscriptionResponse implements Arrayable
 {
     public function __construct(
         public string $id,
@@ -44,5 +49,19 @@ readonly class SubscriptionResponse
             active: $active,
             endDate: $endDate,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'contract' => $this->contract->toArray(),
+            'startDatum' => $this->startDate,
+            'actief' => $this->active,
+            'eindDatum' => $this->endDate,
+        ];
     }
 }

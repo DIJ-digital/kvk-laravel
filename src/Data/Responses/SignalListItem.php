@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\Responses;
 
-readonly class SignalListItem
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SignalListItem implements Arrayable
 {
     public function __construct(
         public string $id,
@@ -42,5 +47,19 @@ readonly class SignalListItem
             signalType: $signalType,
             branchNumber: $branchNumber,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'timestamp' => $this->timestamp,
+            'kvknummer' => $this->kvkNumber,
+            'signaalType' => $this->signalType,
+            'vestigingsnummer' => $this->branchNumber,
+        ];
     }
 }

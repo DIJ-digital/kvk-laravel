@@ -46,4 +46,14 @@ final class MaterialRegistrationTest extends TestCase
         self::assertSame('20150101', $registration->startDate);
         self::assertNull($registration->endDate);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $registration = MaterialRegistration::fake();
+
+        $array = $registration->toArray();
+
+        self::assertSame('20150101', $array['datumAanvang']);
+        self::assertNull($array['datumEinde']);
+    }
 }

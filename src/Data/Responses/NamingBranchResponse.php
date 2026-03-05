@@ -6,8 +6,12 @@ namespace DIJ\Kvk\Data\Responses;
 
 use DIJ\Kvk\Data\ValueObjects\Link;
 use DIJ\Kvk\Data\ValueObjects\TradeName;
+use Illuminate\Contracts\Support\Arrayable;
 
-readonly class NamingBranchResponse
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class NamingBranchResponse implements Arrayable
 {
     /**
      * @param  list<TradeName>  $tradeNames
@@ -63,5 +67,20 @@ readonly class NamingBranchResponse
             tradeNames: $tradeNames === [] ? [TradeName::fake()] : $tradeNames,
             links: $links,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'vestigingsnummer' => $this->branchNumber,
+            'eersteHandelsnaam' => $this->firstTradeName,
+            'naam' => $this->name,
+            'ookGenoemd' => $this->alsoKnownAs,
+            'handelsnamen' => array_map(fn (TradeName $tradeName): array => $tradeName->toArray(), $this->tradeNames),
+            'links' => array_map(fn (Link $link): array => $link->toArray(), $this->links),
+        ];
     }
 }

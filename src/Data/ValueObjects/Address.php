@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\ValueObjects;
 
-readonly class Address
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class Address implements Arrayable
 {
     public function __construct(
         public string $type,
@@ -88,5 +93,30 @@ readonly class Address
             country: $country,
             geoData: $geoData,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'type' => $this->type,
+            'indicatieAfgeschermd' => $this->shielded,
+            'volledigAdres' => $this->fullAddress,
+            'straatnaam' => $this->streetName,
+            'huisnummer' => $this->houseNumber,
+            'huisnummerToevoeging' => $this->houseNumberAddition,
+            'huisletter' => $this->houseLetter,
+            'toevoegingAdres' => $this->addressAddition,
+            'postcode' => $this->postalCode,
+            'postbusnummer' => $this->poBoxNumber,
+            'plaats' => $this->city,
+            'straatHuisnummer' => $this->streetHouseNumber,
+            'postcodeWoonplaats' => $this->postalCodeCity,
+            'regio' => $this->region,
+            'land' => $this->country,
+            'geoData' => $this->geoData?->toArray(),
+        ];
     }
 }

@@ -60,4 +60,18 @@ final class BaseProfileBranchResponseTest extends TestCase
         self::assertSame('Ja', $response->commercialBranchIndicator);
         self::assertSame('Hizzaarderlaan 1 1234AB Lollum', $response->fullAddress);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $response = BaseProfileBranchResponse::fake();
+
+        $array = $response->toArray();
+
+        self::assertSame('000037178598', $array['vestigingsnummer']);
+        self::assertSame('Test BV Donald', $array['eersteHandelsnaam']);
+        self::assertSame('Ja', $array['indHoofdvestiging']);
+        self::assertSame('Ja', $array['indCommercieleVestiging']);
+        self::assertSame('Hizzaarderlaan 1 1234AB Lollum', $array['volledigAdres']);
+        self::assertSame([], $array['links']);
+    }
 }

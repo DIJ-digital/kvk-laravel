@@ -50,4 +50,18 @@ final class SubscriptionResponseTest extends TestCase
         self::assertTrue($response->active);
         self::assertNull($response->endDate);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $response = SubscriptionResponse::fake();
+
+        $array = $response->toArray();
+
+        self::assertSame('subscription-456', $array['id']);
+        self::assertIsArray($array['contract']);
+        self::assertSame('contract-789', $array['contract']['id']);
+        self::assertSame('2024-01-01T00:00:00Z', $array['startDatum']);
+        self::assertTrue($array['actief']);
+        self::assertNull($array['eindDatum']);
+    }
 }

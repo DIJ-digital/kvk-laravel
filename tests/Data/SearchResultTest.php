@@ -143,4 +143,31 @@ final class SearchResultTest extends TestCase
             self::assertSame('', $e->responseBody);
         }
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $result = SearchResult::fromArray([
+            'pagina' => 1,
+            'resultatenPerPagina' => 10,
+            'totaal' => 1,
+            'resultaten' => [
+                [
+                    'kvkNummer' => '69599068',
+                    'naam' => 'Test BV Donald',
+                    'type' => 'hoofdvestiging',
+                    'actief' => 'Ja',
+                ],
+            ],
+        ]);
+
+        $array = $result->toArray();
+
+        self::assertSame(1, $array['pagina']);
+        self::assertSame(10, $array['resultatenPerPagina']);
+        self::assertSame(1, $array['totaal']);
+        self::assertNull($array['vorige']);
+        self::assertNull($array['volgende']);
+        self::assertIsArray($array['resultaten']);
+        self::assertCount(1, $array['resultaten']);
+    }
 }

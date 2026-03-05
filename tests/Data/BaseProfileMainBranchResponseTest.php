@@ -167,4 +167,29 @@ final class BaseProfileMainBranchResponseTest extends TestCase
         self::assertCount(1, $response->websites);
         self::assertCount(1, $response->sbiActivities);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $response = BaseProfileMainBranchResponse::fake();
+
+        $array = $response->toArray();
+
+        self::assertSame('000037178598', $array['vestigingsnummer']);
+        self::assertSame('69599068', $array['kvkNummer']);
+        self::assertSame('Nee', $array['indNonMailing']);
+        self::assertSame('Test BV Donald', $array['eersteHandelsnaam']);
+        self::assertSame('Ja', $array['indHoofdvestiging']);
+        self::assertSame('Ja', $array['indCommercieleVestiging']);
+        self::assertSame('123456789', $array['rsin']);
+        self::assertSame('20150622', $array['formeleRegistratiedatum']);
+        self::assertIsArray($array['materieleRegistratie']);
+        self::assertSame(10, $array['voltijdWerkzamePersonen']);
+        self::assertSame(15, $array['totaalWerkzamePersonen']);
+        self::assertSame(5, $array['deeltijdWerkzamePersonen']);
+        self::assertCount(1, $array['handelsnamen']);
+        self::assertCount(1, $array['adressen']);
+        self::assertSame(['https://example.com'], $array['websites']);
+        self::assertCount(1, $array['sbiActiviteiten']);
+        self::assertSame([], $array['links']);
+    }
 }

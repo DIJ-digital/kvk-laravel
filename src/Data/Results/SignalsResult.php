@@ -7,9 +7,13 @@ namespace DIJ\Kvk\Data\Results;
 use DIJ\Kvk\Collections\SignalListItemCollection;
 use DIJ\Kvk\Data\Responses\SignalListItem;
 use DIJ\Kvk\Exceptions\KvkException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\Response;
 
-readonly class SignalsResult
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SignalsResult implements Arrayable
 {
     public function __construct(
         public SignalListItemCollection $signals,
@@ -71,5 +75,21 @@ readonly class SignalsResult
             previous: $previous,
             next: $next,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'signalen' => $this->signals->toArray(),
+            'pagina' => $this->page,
+            'aantal' => $this->resultsPerPage,
+            'totaal' => $this->total,
+            'totaalPaginas' => $this->totalPages,
+            'vorige' => $this->previous,
+            'volgende' => $this->next,
+        ];
     }
 }

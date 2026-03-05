@@ -66,4 +66,34 @@ final class SearchResultAddressTest extends TestCase
         self::assertNull($address->domesticAddress);
         self::assertNull($address->foreignAddress);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $address = SearchResultAddress::fromArray([
+            'binnenlandsAdres' => [
+                'type' => 'bezoekadres',
+                'straatnaam' => 'Hizzaarderlaan',
+            ],
+            'buitenlandsAdres' => [
+                'land' => 'Duitsland',
+            ],
+        ]);
+
+        $array = $address->toArray();
+
+        self::assertIsArray($array['binnenlandsAdres']);
+        self::assertSame('bezoekadres', $array['binnenlandsAdres']['type']);
+        self::assertIsArray($array['buitenlandsAdres']);
+        self::assertSame('Duitsland', $array['buitenlandsAdres']['land']);
+    }
+
+    public function test_to_array_returns_null_for_absent_addresses(): void
+    {
+        $address = SearchResultAddress::fromArray([]);
+
+        $array = $address->toArray();
+
+        self::assertNull($array['binnenlandsAdres']);
+        self::assertNull($array['buitenlandsAdres']);
+    }
 }

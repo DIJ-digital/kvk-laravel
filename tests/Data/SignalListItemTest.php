@@ -48,4 +48,17 @@ final class SignalListItemTest extends TestCase
         self::assertSame('SignaalGewijzigdeInschrijving', $item->signalType);
         self::assertSame('000038821281', $item->branchNumber);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $item = SignalListItem::fake();
+
+        $array = $item->toArray();
+
+        self::assertSame('signal-001', $array['id']);
+        self::assertSame('2024-05-14T15:25:13.773Z', $array['timestamp']);
+        self::assertSame('69792917', $array['kvknummer']);
+        self::assertSame('SignaalGewijzigdeInschrijving', $array['signaalType']);
+        self::assertSame('000038821281', $array['vestigingsnummer']);
+    }
 }

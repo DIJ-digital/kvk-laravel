@@ -74,4 +74,15 @@ final class SubscriptionsResultTest extends TestCase
         self::assertSame('customer-123', $result->customerId);
         self::assertCount(1, $result->subscriptions);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $result = SubscriptionsResult::fake();
+
+        $array = $result->toArray();
+
+        self::assertSame('customer-123', $array['klantId']);
+        self::assertIsArray($array['abonnementen']);
+        self::assertCount(1, $array['abonnementen']);
+    }
 }

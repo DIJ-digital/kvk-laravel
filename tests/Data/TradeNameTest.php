@@ -38,4 +38,14 @@ final class TradeNameTest extends TestCase
         self::assertSame('Test BV Donald', $tradeName->name);
         self::assertSame(1, $tradeName->order);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $tradeName = TradeName::fake();
+
+        $array = $tradeName->toArray();
+
+        self::assertSame('Test BV Donald', $array['naam']);
+        self::assertSame(1, $array['volgorde']);
+    }
 }

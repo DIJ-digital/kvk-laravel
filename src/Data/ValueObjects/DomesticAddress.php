@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\ValueObjects;
 
-readonly class DomesticAddress
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class DomesticAddress implements Arrayable
 {
     public function __construct(
         public string $type,
@@ -30,5 +35,21 @@ readonly class DomesticAddress
             postalCode: $data['postcode'] ?? null,
             city: $data['plaats'] ?? null,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'type' => $this->type,
+            'straatnaam' => $this->streetName,
+            'huisnummer' => $this->houseNumber,
+            'huisletter' => $this->houseLetter,
+            'postbusnummer' => $this->poBoxNumber,
+            'postcode' => $this->postalCode,
+            'plaats' => $this->city,
+        ];
     }
 }

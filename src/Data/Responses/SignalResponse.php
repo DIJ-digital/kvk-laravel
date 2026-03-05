@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace DIJ\Kvk\Data\Responses;
 
 use DIJ\Kvk\Exceptions\KvkException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\Response;
 
-readonly class SignalResponse
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SignalResponse implements Arrayable
 {
     /**
      * @param  array<string, mixed>  $relatesTo
@@ -67,5 +71,19 @@ readonly class SignalResponse
             registrationTimestamp: $registrationTimestamp,
             relatesTo: $relatesTo === [] ? ['kvkNummer' => '69792917'] : $relatesTo,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'berichtId' => $this->messageId,
+            'signaalType' => $this->signalType,
+            'registratieId' => $this->registrationId,
+            'registratieTijdstip' => $this->registrationTimestamp,
+            'heeftBetrekkingOp' => $this->relatesTo,
+        ];
     }
 }

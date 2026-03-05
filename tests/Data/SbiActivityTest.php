@@ -43,4 +43,15 @@ final class SbiActivityTest extends TestCase
         self::assertSame('Universitair medisch centra', $activity->sbiDescription);
         self::assertSame('Ja', $activity->mainActivityIndicator);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $activity = SbiActivity::fake();
+
+        $array = $activity->toArray();
+
+        self::assertSame('86101', $array['sbiCode']);
+        self::assertSame('Universitair medisch centra', $array['sbiOmschrijving']);
+        self::assertSame('Ja', $array['indHoofdactiviteit']);
+    }
 }

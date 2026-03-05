@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\ValueObjects;
 
-readonly class SearchResultAddress
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SearchResultAddress implements Arrayable
 {
     public function __construct(
         public ?DomesticAddress $domesticAddress = null,
@@ -24,5 +29,16 @@ readonly class SearchResultAddress
                 ? ForeignAddress::fromArray($data['buitenlandsAdres'])
                 : null,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'binnenlandsAdres' => $this->domesticAddress?->toArray(),
+            'buitenlandsAdres' => $this->foreignAddress?->toArray(),
+        ];
     }
 }

@@ -43,4 +43,19 @@ final class ForeignAddressTest extends TestCase
         self::assertNull($address->postalCodeCity);
         self::assertNull($address->country);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $address = new ForeignAddress(
+            streetHouseNumber: '123 Main Street',
+            postalCodeCity: '12345 Berlin',
+            country: 'Duitsland',
+        );
+
+        $array = $address->toArray();
+
+        self::assertSame('123 Main Street', $array['straatHuisnummer']);
+        self::assertSame('12345 Berlin', $array['postcodeWoonplaats']);
+        self::assertSame('Duitsland', $array['land']);
+    }
 }

@@ -7,9 +7,13 @@ namespace DIJ\Kvk\Data\Responses;
 use DIJ\Kvk\Data\ValueObjects\Address;
 use DIJ\Kvk\Data\ValueObjects\Link;
 use DIJ\Kvk\Exceptions\KvkException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\Response;
 
-readonly class BaseProfileOwnerResponse
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class BaseProfileOwnerResponse implements Arrayable
 {
     /**
      * @param  list<Address>  $addresses
@@ -83,5 +87,20 @@ readonly class BaseProfileOwnerResponse
             websites: $websites === [] ? ['https://example.com'] : $websites,
             links: $links,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'rsin' => $this->rsin,
+            'rechtsvorm' => $this->legalForm,
+            'uitgebreideRechtsvorm' => $this->extendedLegalForm,
+            'adressen' => array_map(fn (Address $address): array => $address->toArray(), $this->addresses),
+            'websites' => $this->websites,
+            'links' => array_map(fn (Link $link): array => $link->toArray(), $this->links),
+        ];
     }
 }

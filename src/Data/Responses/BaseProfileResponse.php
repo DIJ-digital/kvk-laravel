@@ -9,9 +9,13 @@ use DIJ\Kvk\Data\ValueObjects\MaterialRegistration;
 use DIJ\Kvk\Data\ValueObjects\SbiActivity;
 use DIJ\Kvk\Data\ValueObjects\TradeName;
 use DIJ\Kvk\Exceptions\KvkException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\Response;
 
-readonly class BaseProfileResponse
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class BaseProfileResponse implements Arrayable
 {
     /**
      * @param  list<TradeName>  $tradeNames
@@ -104,5 +108,23 @@ readonly class BaseProfileResponse
             sbiActivities: $sbiActivities === [] ? [SbiActivity::fake()] : $sbiActivities,
             links: $links,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'kvkNummer' => $this->kvkNumber,
+            'indNonMailing' => $this->nonMailingIndicator,
+            'naam' => $this->name,
+            'formeleRegistratiedatum' => $this->formalRegistrationDate,
+            'materieleRegistratie' => $this->materialRegistration?->toArray(),
+            'statutaireNaam' => $this->statutoryName,
+            'handelsnamen' => array_map(fn (TradeName $tradeName): array => $tradeName->toArray(), $this->tradeNames),
+            'sbiActiviteiten' => array_map(fn (SbiActivity $activity): array => $activity->toArray(), $this->sbiActivities),
+            'links' => array_map(fn (Link $link): array => $link->toArray(), $this->links),
+        ];
     }
 }

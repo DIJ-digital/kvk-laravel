@@ -119,4 +119,19 @@ final class BaseProfileBranchesResultTest extends TestCase
         self::assertCount(1, $result->branches);
         self::assertInstanceOf(BaseProfileBranchResponse::class, $result->branches->first());
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $result = BaseProfileBranchesResult::fake();
+
+        $array = $result->toArray();
+
+        self::assertSame('69599068', $array['kvkNummer']);
+        self::assertSame(1, $array['aantalCommercieleVestigingen']);
+        self::assertSame(0, $array['aantalNietCommercieleVestigingen']);
+        self::assertSame(1, $array['totaalAantalVestigingen']);
+        self::assertIsArray($array['vestigingen']);
+        self::assertCount(1, $array['vestigingen']);
+        self::assertSame([], $array['links']);
+    }
 }

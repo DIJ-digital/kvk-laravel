@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace DIJ\Kvk\Data\Responses;
 
 use DIJ\Kvk\Data\ValueObjects\Link;
+use Illuminate\Contracts\Support\Arrayable;
 
-readonly class BaseProfileBranchResponse
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class BaseProfileBranchResponse implements Arrayable
 {
     /**
      * @param  list<Link>  $links
@@ -57,5 +61,20 @@ readonly class BaseProfileBranchResponse
             fullAddress: $fullAddress,
             links: $links,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'vestigingsnummer' => $this->branchNumber,
+            'eersteHandelsnaam' => $this->firstTradeName,
+            'indHoofdvestiging' => $this->mainBranchIndicator,
+            'indCommercieleVestiging' => $this->commercialBranchIndicator,
+            'volledigAdres' => $this->fullAddress,
+            'links' => array_map(fn (Link $link): array => $link->toArray(), $this->links),
+        ];
     }
 }

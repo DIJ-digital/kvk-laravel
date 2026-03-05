@@ -30,4 +30,17 @@ final class SettingsTest extends TestCase
         self::assertSame('https://api.kvk.nl/test', $settings->base_url);
         self::assertSame('another-key', $settings->api_key);
     }
+
+    public function test_to_array_maps_keys(): void
+    {
+        $settings = new Settings(
+            base_url: 'https://api.kvk.nl',
+            api_key: 'test-api-key',
+        );
+
+        $array = $settings->toArray();
+
+        self::assertSame('https://api.kvk.nl', $array['base_url']);
+        self::assertSame('test-api-key', $array['api_key']);
+    }
 }

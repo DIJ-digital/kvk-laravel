@@ -65,4 +65,27 @@ final class DomesticAddressTest extends TestCase
         self::assertNull($address->postalCode);
         self::assertNull($address->city);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $address = new DomesticAddress(
+            type: 'bezoekadres',
+            streetName: 'Hizzaarderlaan',
+            houseNumber: 1,
+            houseLetter: 'A',
+            poBoxNumber: 123,
+            postalCode: '1234AB',
+            city: 'Lollum',
+        );
+
+        $array = $address->toArray();
+
+        self::assertSame('bezoekadres', $array['type']);
+        self::assertSame('Hizzaarderlaan', $array['straatnaam']);
+        self::assertSame(1, $array['huisnummer']);
+        self::assertSame('A', $array['huisletter']);
+        self::assertSame(123, $array['postbusnummer']);
+        self::assertSame('1234AB', $array['postcode']);
+        self::assertSame('Lollum', $array['plaats']);
+    }
 }

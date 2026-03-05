@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\ValueObjects;
 
-readonly class SbiActivity
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class SbiActivity implements Arrayable
 {
     public function __construct(
         public string $sbiCode,
@@ -34,5 +39,17 @@ readonly class SbiActivity
             sbiDescription: $sbiDescription,
             mainActivityIndicator: $mainActivityIndicator,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'sbiCode' => $this->sbiCode,
+            'sbiOmschrijving' => $this->sbiDescription,
+            'indHoofdactiviteit' => $this->mainActivityIndicator,
+        ];
     }
 }

@@ -59,4 +59,19 @@ final class GeoDataTest extends TestCase
         self::assertSame(454921.47, $geoData->rijksdriehoekY);
         self::assertSame(0.0, $geoData->rijksdriehoekZ);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $geoData = GeoData::fake();
+
+        $array = $geoData->toArray();
+
+        self::assertSame('0632010000010090', $array['addresseerbaarObjectId']);
+        self::assertSame('0632200000010090', $array['nummerAanduidingId']);
+        self::assertSame(52.08151653230184, $array['gpsLatitude']);
+        self::assertSame(4.890048011859921, $array['gpsLongitude']);
+        self::assertSame(120921.45, $array['rijksdriehoekX']);
+        self::assertSame(454921.47, $array['rijksdriehoekY']);
+        self::assertSame(0.0, $array['rijksdriehoekZ']);
+    }
 }

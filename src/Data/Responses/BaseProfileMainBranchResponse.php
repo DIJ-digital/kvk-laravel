@@ -10,9 +10,13 @@ use DIJ\Kvk\Data\ValueObjects\MaterialRegistration;
 use DIJ\Kvk\Data\ValueObjects\SbiActivity;
 use DIJ\Kvk\Data\ValueObjects\TradeName;
 use DIJ\Kvk\Exceptions\KvkException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\Response;
 
-readonly class BaseProfileMainBranchResponse
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class BaseProfileMainBranchResponse implements Arrayable
 {
     /**
      * @param  list<TradeName>  $tradeNames
@@ -144,5 +148,31 @@ readonly class BaseProfileMainBranchResponse
             sbiActivities: $sbiActivities === [] ? [SbiActivity::fake()] : $sbiActivities,
             links: $links,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'vestigingsnummer' => $this->branchNumber,
+            'kvkNummer' => $this->kvkNumber,
+            'indNonMailing' => $this->nonMailingIndicator,
+            'eersteHandelsnaam' => $this->firstTradeName,
+            'indHoofdvestiging' => $this->mainBranchIndicator,
+            'indCommercieleVestiging' => $this->commercialBranchIndicator,
+            'rsin' => $this->rsin,
+            'formeleRegistratiedatum' => $this->formalRegistrationDate,
+            'materieleRegistratie' => $this->materialRegistration?->toArray(),
+            'voltijdWerkzamePersonen' => $this->fullTimeEmployees,
+            'totaalWerkzamePersonen' => $this->totalEmployees,
+            'deeltijdWerkzamePersonen' => $this->partTimeEmployees,
+            'handelsnamen' => array_map(fn (TradeName $tradeName): array => $tradeName->toArray(), $this->tradeNames),
+            'adressen' => array_map(fn (Address $address): array => $address->toArray(), $this->addresses),
+            'websites' => $this->websites,
+            'sbiActiviteiten' => array_map(fn (SbiActivity $activity): array => $activity->toArray(), $this->sbiActivities),
+            'links' => array_map(fn (Link $link): array => $link->toArray(), $this->links),
+        ];
     }
 }

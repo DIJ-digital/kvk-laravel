@@ -30,4 +30,17 @@ final class LinkTest extends TestCase
         self::assertSame('vestigingsprofiel', $link->rel);
         self::assertSame('https://api.kvk.nl/api/v1/vestigingsprofielen/000037178598', $link->href);
     }
+
+    public function test_to_array_maps_keys(): void
+    {
+        $link = new Link(
+            rel: 'basisprofiel',
+            href: 'https://api.kvk.nl/api/v1/basisprofielen/69599068',
+        );
+
+        $array = $link->toArray();
+
+        self::assertSame('basisprofiel', $array['rel']);
+        self::assertSame('https://api.kvk.nl/api/v1/basisprofielen/69599068', $array['href']);
+    }
 }

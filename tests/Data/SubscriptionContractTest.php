@@ -24,4 +24,13 @@ final class SubscriptionContractTest extends TestCase
 
         self::assertSame('contract-789', $contract->id);
     }
+
+    public function test_to_array_maps_keys(): void
+    {
+        $contract = SubscriptionContract::fake();
+
+        $array = $contract->toArray();
+
+        self::assertSame('contract-789', $array['id']);
+    }
 }

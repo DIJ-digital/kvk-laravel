@@ -124,4 +124,22 @@ final class NamingResponseTest extends TestCase
         self::assertNull($response->endDate);
         self::assertCount(1, $response->branches);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $response = NamingResponse::fake();
+
+        $array = $response->toArray();
+
+        self::assertSame('69599068', $array['kvkNummer']);
+        self::assertSame('Stichting Bolderbast', $array['statutaireNaam']);
+        self::assertSame('Test Stichting Bolderbast', $array['naam']);
+        self::assertIsArray($array['vestigingen']);
+        self::assertCount(1, $array['vestigingen']);
+        self::assertSame('123456789', $array['rsin']);
+        self::assertSame('Bolderbast', $array['ookGenoemd']);
+        self::assertSame('20150101', $array['startdatum']);
+        self::assertNull($array['einddatum']);
+        self::assertSame([], $array['links']);
+    }
 }

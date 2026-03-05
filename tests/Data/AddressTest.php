@@ -102,4 +102,31 @@ final class AddressTest extends TestCase
         self::assertSame('Woerden', $address->city);
         self::assertSame('Nederland', $address->country);
     }
+
+    public function test_to_array_maps_to_dutch_keys(): void
+    {
+        $address = Address::fake();
+
+        $array = $address->toArray();
+
+        self::assertSame('bezoekadres', $array['type']);
+        self::assertSame('Nee', $array['indicatieAfgeschermd']);
+        self::assertSame('Watermolenlaan 1 3447GT Woerden', $array['volledigAdres']);
+        self::assertSame('Watermolenlaan', $array['straatnaam']);
+        self::assertSame(1, $array['huisnummer']);
+        self::assertSame('3447GT', $array['postcode']);
+        self::assertSame('Woerden', $array['plaats']);
+        self::assertSame('Nederland', $array['land']);
+        self::assertNull($array['geoData']);
+    }
+
+    public function test_to_array_includes_nested_geo_data(): void
+    {
+        $address = Address::fake(geoData: GeoData::fake());
+
+        $array = $address->toArray();
+
+        self::assertIsArray($array['geoData']);
+        self::assertSame('0632010000010090', $array['geoData']['addresseerbaarObjectId']);
+    }
 }

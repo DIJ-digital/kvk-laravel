@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace DIJ\Kvk\Data\ValueObjects;
 
-readonly class GeoData
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * @implements Arrayable<string, mixed>
+ */
+readonly class GeoData implements Arrayable
 {
     public function __construct(
         public ?string $addressableObjectId = null,
@@ -50,5 +55,21 @@ readonly class GeoData
             rijksdriehoekY: $rijksdriehoekY,
             rijksdriehoekZ: $rijksdriehoekZ,
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'addresseerbaarObjectId' => $this->addressableObjectId,
+            'nummerAanduidingId' => $this->numberIndicationId,
+            'gpsLatitude' => $this->gpsLatitude,
+            'gpsLongitude' => $this->gpsLongitude,
+            'rijksdriehoekX' => $this->rijksdriehoekX,
+            'rijksdriehoekY' => $this->rijksdriehoekY,
+            'rijksdriehoekZ' => $this->rijksdriehoekZ,
+        ];
     }
 }
